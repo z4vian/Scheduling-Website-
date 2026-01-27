@@ -15,6 +15,7 @@ const AvailabilityTable = ({
     
     if (value === 'morning') return 'Morning Only';
     if (value === 'dinner') return 'Dinner Only';
+    if (value === 'unavailable') return 'Unavailable';
     return 'All Day';
   };
 
@@ -29,6 +30,9 @@ const AvailabilityTable = ({
     if (value === 'dinner') {
       return 'bg-purple-100 text-purple-700 hover:bg-purple-200';
     }
+    if (value === 'unavailable') {
+      return 'bg-red-100 text-red-700 hover:bg-red-200';
+    }
     return 'bg-green-600 text-white hover:bg-green-700';
   };
 
@@ -36,7 +40,7 @@ const AvailabilityTable = ({
     <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
       <div className="p-5 border-b border-gray-200">
         <h3 className="text-lg font-bold text-gray-900">Employee Availability</h3>
-        <p className="text-sm text-gray-500 mt-1">Click to cycle: All Day → Morning Only → Dinner Only</p>
+        <p className="text-sm text-gray-500 mt-1">Click to cycle: All Day → Morning Only → Dinner Only → Unavailable</p>
       </div>
 
       <div className="overflow-x-auto">

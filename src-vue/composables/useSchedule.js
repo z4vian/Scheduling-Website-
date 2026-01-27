@@ -34,6 +34,9 @@ const canWorkShiftBlock = (employeeId, dateStr, shiftKey, dayAvailability) => {
   const availability = dayAvailability.value[key] || 'all';
   const shiftBlock = getShiftBlock(shiftKey);
   
+  // If availability is 'unavailable', they cannot work any shift
+  if (availability === 'unavailable') return false;
+  
   // If availability is 'all', they can work any shift
   if (availability === 'all') return true;
   

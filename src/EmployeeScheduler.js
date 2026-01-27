@@ -48,10 +48,11 @@ const EmployeeScheduler = () => {
     const key = `${employeeId}-${dateStr}`;
     const currentValue = dayAvailability[key] || 'all';
     
-    // Cycle through: all -> morning -> dinner -> all
+    // Cycle through: all -> morning -> dinner -> unavailable -> all
     const nextValue = 
       currentValue === 'all' ? 'morning' :
       currentValue === 'morning' ? 'dinner' :
+      currentValue === 'dinner' ? 'unavailable' :
       'all';
     
     if (nextValue === 'all') {

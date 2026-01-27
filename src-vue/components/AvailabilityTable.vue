@@ -2,7 +2,7 @@
   <div class="bg-white rounded-lg border border-gray-200 overflow-hidden shadow-lg">
     <div class="p-5 border-b border-gray-200 bg-gradient-to-r from-blue-50 to-indigo-50">
       <h3 class="text-lg font-bold text-gray-900">Employee Availability</h3>
-      <p class="text-sm text-gray-500 mt-1">Click to cycle: All Day → Morning Only → Dinner Only</p>
+      <p class="text-sm text-gray-500 mt-1">Click to cycle: All Day → Morning Only → Dinner Only → Unavailable</p>
     </div>
 
     <div class="overflow-x-auto">
@@ -77,6 +77,7 @@ const getAvailabilityLabel = (employeeId, date) => {
   
   if (value === 'morning') return 'Morning Only';
   if (value === 'dinner') return 'Dinner Only';
+  if (value === 'unavailable') return 'Unavailable';
   return 'All Day';
 };
 
@@ -90,6 +91,9 @@ const getAvailabilityStyles = (employeeId, date) => {
   }
   if (value === 'dinner') {
     return 'bg-purple-100 text-purple-700 hover:bg-purple-200';
+  }
+  if (value === 'unavailable') {
+    return 'bg-red-100 text-red-700 hover:bg-red-200';
   }
   return 'bg-green-600 text-white hover:bg-green-700';
 };
