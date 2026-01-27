@@ -1,6 +1,33 @@
 import { ref, computed } from 'vue';
 import { formatDate, getWeekDates, calculateShiftHours } from '../utils/dateUtils';
 
+// Helper function to determine which block a shift belongs to
+const getShiftBlock = (shiftKey) => {
+  if (shiftKey.startsWith('morning')) {
+    return 'morning';
+  }
+  if (shiftKey.startsWith('dinner')) {
+    return 'dinner';
+  }
+  // Default: each shift is its own block if not morning/dinner
+  return shiftKey;
+};
+
+// Helper function to check if an employee is already assigned to a shift in the same block for a given date
+const isAlreadyAssignedInBlock = (employeeId, dateStr, shiftKey, schedule, shiftTemplates) => {
+  const block = getShiftBlock(shiftKey);
+  const daySchedule = schedule[dateStr] || {};
+  
+  // Check all shifts in the same block
+  return Object.keys(shiftTemplates).some((otherShiftKey) => {
+    if (otherShiftKey === shiftKey) return false; // Don't check the same shift
+    if (getShiftBlock(otherShiftKey) !== block) return false; // Different block
+    
+    const assignedEmployeeId = daySchedule[otherShiftKey];
+    return assignedEmployeeId === employeeId;
+  });
+};
+
 export function useSchedule(employees, shiftTemplates, currentWeekStart, unavailability, closedDates) {
   const schedule = ref({});
 
@@ -48,7 +75,10 @@ export function useSchedule(employees, shiftTemplates, currentWeekStart, unavail
 
       shiftKeys.forEach((shiftKey) => {
         const availableEmployees = employees.value.filter(
-          (emp) => !isUnavailable(emp.id, date) && canWorkShift(emp.id, shiftKey)
+          (emp) => 
+            !isUnavailable(emp.id, date) && 
+            canWorkShift(emp.id, shiftKey) &&
+            !isAlreadyAssignedInBlock(emp.id, dateStr, shiftKey, newSchedule, shiftTemplates.value)
         );
 
         if (availableEmployees.length > 0) {
