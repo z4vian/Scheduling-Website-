@@ -27,7 +27,9 @@ const EmployeeScheduler = () => {
 
   const [shiftOverrides, setShiftOverrides] = useState({});
   const [currentWeekStart, setCurrentWeekStart] = useState(() => startOfWeekSunday(new Date()));
-  const [unavailability, setUnavailability] = useState({});
+  // dayAvailability: { "employeeId-dateStr": "all" | "morning" | "dinner" }
+  // undefined/null means "all" (default)
+  const [dayAvailability, setDayAvailability] = useState({});
   const [closedDates, setClosedDates] = useState({});
   const [activeTab, setActiveTab] = useState('calendar');
 
@@ -39,13 +41,30 @@ const EmployeeScheduler = () => {
     canWorkShift,
     isUnavailable,
     isStoreClosed,
-  } = useSchedule(employees, shiftTemplates, currentWeekStart, unavailability, closedDates);
+  } = useSchedule(employees, shiftTemplates, currentWeekStart, dayAvailability, closedDates);
 
-  const toggleUnavailability = useCallback((employeeId, date) => {
+  const toggleDayAvailability = useCallback((employeeId, date) => {
     const dateStr = formatDate(date);
     const key = `${employeeId}-${dateStr}`;
-    setUnavailability((prev) => ({ ...prev, [key]: !prev[key] }));
-  }, []);
+    const currentValue = dayAvailability[key] || 'all';
+    
+    // Cycle through: all -> morning -> dinner -> all
+    const nextValue = 
+      currentValue === 'all' ? 'morning' :
+      currentValue === 'morning' ? 'dinner' :
+      'all';
+    
+    if (nextValue === 'all') {
+      // Remove the key if it's back to 'all' (default state)
+      setDayAvailability((prev) => {
+        const updated = { ...prev };
+        delete updated[key];
+        return updated;
+      });
+    } else {
+      setDayAvailability((prev) => ({ ...prev, [key]: nextValue }));
+    }
+  }, [dayAvailability]);
 
   const toggleStoreClosed = useCallback((date) => {
     const dateStr = formatDate(date);
@@ -191,8 +210,8 @@ const EmployeeScheduler = () => {
                 onWeekChange={setCurrentWeekStart}
                 weekDates={weekDates}
                 employees={employees}
-                unavailability={unavailability}
-                onToggleUnavailability={toggleUnavailability}
+                dayAvailability={dayAvailability}
+                onToggleDayAvailability={toggleDayAvailability}
                 closedDates={closedDates}
                 onToggleStoreClosed={toggleStoreClosed}
                 isStoreClosed={isStoreClosed}

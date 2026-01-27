@@ -11,8 +11,8 @@ const CalendarTab = ({
   onWeekChange,
   weekDates,
   employees,
-  unavailability,
-  onToggleUnavailability,
+  dayAvailability,
+  onToggleDayAvailability,
   closedDates,
   onToggleStoreClosed,
   isStoreClosed,
@@ -57,8 +57,8 @@ const CalendarTab = ({
       <AvailabilityTable
         employees={employees}
         weekDates={weekDates}
-        unavailability={unavailability}
-        onToggleUnavailability={onToggleUnavailability}
+        dayAvailability={dayAvailability}
+        onToggleDayAvailability={onToggleDayAvailability}
         isStoreClosed={isStoreClosed}
       />
 

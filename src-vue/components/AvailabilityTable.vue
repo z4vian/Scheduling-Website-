@@ -2,6 +2,7 @@
   <div class="bg-white rounded-lg border border-gray-200 overflow-hidden shadow-lg">
     <div class="p-5 border-b border-gray-200 bg-gradient-to-r from-blue-50 to-indigo-50">
       <h3 class="text-lg font-bold text-gray-900">Employee Availability</h3>
+      <p class="text-sm text-gray-500 mt-1">Click to cycle: All Day → Morning Only → Dinner Only</p>
     </div>
 
     <div class="overflow-x-auto">
@@ -44,12 +45,10 @@
                 @click="$emit('toggle', employee.id, date)"
                 :class="[
                   'w-full px-3 py-2 rounded-lg font-medium text-sm transition-all duration-200 shadow-sm hover:shadow',
-                  isUnavailable(employee.id, date)
-                    ? 'bg-red-100 text-red-700 hover:bg-red-200'
-                    : 'bg-green-600 text-white hover:bg-green-700'
+                  getAvailabilityStyles(employee.id, date)
                 ]"
               >
-                {{ isUnavailable(employee.id, date) ? 'Unavailable' : 'Available' }}
+                {{ getAvailabilityLabel(employee.id, date) }}
               </button>
             </td>
           </tr>
@@ -65,16 +64,34 @@ import { formatDate, formatDisplayDate, getDayName } from '../utils/dateUtils';
 const props = defineProps({
   employees: Array,
   weekDates: Array,
-  unavailability: Object,
+  dayAvailability: Object,
   isStoreClosed: Function,
 });
 
 defineEmits(['toggle']);
 
-const isUnavailable = (employeeId, date) => {
+const getAvailabilityLabel = (employeeId, date) => {
   const dateStr = formatDate(date);
   const key = `${employeeId}-${dateStr}`;
-  return props.unavailability[key] || false;
+  const value = props.dayAvailability[key] || 'all';
+  
+  if (value === 'morning') return 'Morning Only';
+  if (value === 'dinner') return 'Dinner Only';
+  return 'All Day';
+};
+
+const getAvailabilityStyles = (employeeId, date) => {
+  const dateStr = formatDate(date);
+  const key = `${employeeId}-${dateStr}`;
+  const value = props.dayAvailability[key] || 'all';
+  
+  if (value === 'morning') {
+    return 'bg-blue-100 text-blue-700 hover:bg-blue-200';
+  }
+  if (value === 'dinner') {
+    return 'bg-purple-100 text-purple-700 hover:bg-purple-200';
+  }
+  return 'bg-green-600 text-white hover:bg-green-700';
 };
 </script>
 

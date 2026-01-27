@@ -19,7 +19,7 @@
             :currentWeekStart="currentWeekStart"
             :weekDates="weekDates"
             :employees="employees"
-            :unavailability="unavailability"
+            :dayAvailability="dayAvailability"
             :closedDates="closedDates"
             :schedule="schedule"
             :shiftTemplates="shiftTemplates"
@@ -29,7 +29,7 @@
             @generate="handleGenerateSchedule"
             @export="exportSchedule"
             @toggleStoreClosed="toggleStoreClosed"
-            @toggleUnavailability="toggleUnavailability"
+            @toggleDayAvailability="toggleDayAvailability"
           />
 
           <ShiftsTab
@@ -88,7 +88,9 @@ const shiftTemplates = ref({
 
 const shiftOverrides = ref({});
 const currentWeekStart = ref(startOfWeekSunday(new Date()));
-const unavailability = ref({});
+// dayAvailability: { "employeeId-dateStr": "all" | "morning" | "dinner" }
+// undefined/null means "all" (default)
+const dayAvailability = ref({});
 const closedDates = ref({});
 const activeTab = ref('calendar');
 
@@ -100,7 +102,7 @@ const {
   canWorkShift,
   isUnavailable,
   isStoreClosed,
-} = useSchedule(employees, shiftTemplates, currentWeekStart, unavailability, closedDates);
+} = useSchedule(employees, shiftTemplates, currentWeekStart, dayAvailability, closedDates);
 
 const getShiftTimes = (date, shiftKey) => {
   const dateStr = formatDate(date);
@@ -187,10 +189,25 @@ const removeEmployee = (employeeId) => {
   }
 };
 
-const toggleUnavailability = (employeeId, date) => {
+const toggleDayAvailability = (employeeId, date) => {
   const dateStr = formatDate(date);
   const key = `${employeeId}-${dateStr}`;
-  unavailability.value = { ...unavailability.value, [key]: !unavailability.value[key] };
+  const currentValue = dayAvailability.value[key] || 'all';
+  
+  // Cycle through: all -> morning -> dinner -> all
+  const nextValue = 
+    currentValue === 'all' ? 'morning' :
+    currentValue === 'morning' ? 'dinner' :
+    'all';
+  
+  if (nextValue === 'all') {
+    // Remove the key if it's back to 'all' (default state)
+    const updated = { ...dayAvailability.value };
+    delete updated[key];
+    dayAvailability.value = updated;
+  } else {
+    dayAvailability.value = { ...dayAvailability.value, [key]: nextValue };
+  }
 };
 
 const toggleStoreClosed = (date) => {

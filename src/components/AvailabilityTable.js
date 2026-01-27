@@ -4,14 +4,39 @@ import { formatDate, formatDisplayDate, getDayName } from '../utils/dateUtils';
 const AvailabilityTable = ({
   employees,
   weekDates,
-  unavailability,
-  onToggleUnavailability,
+  dayAvailability,
+  onToggleDayAvailability,
   isStoreClosed,
 }) => {
+  const getAvailabilityLabel = (employeeId, date) => {
+    const dateStr = formatDate(date);
+    const key = `${employeeId}-${dateStr}`;
+    const value = dayAvailability[key] || 'all';
+    
+    if (value === 'morning') return 'Morning Only';
+    if (value === 'dinner') return 'Dinner Only';
+    return 'All Day';
+  };
+
+  const getAvailabilityStyles = (employeeId, date) => {
+    const dateStr = formatDate(date);
+    const key = `${employeeId}-${dateStr}`;
+    const value = dayAvailability[key] || 'all';
+    
+    if (value === 'morning') {
+      return 'bg-blue-100 text-blue-700 hover:bg-blue-200';
+    }
+    if (value === 'dinner') {
+      return 'bg-purple-100 text-purple-700 hover:bg-purple-200';
+    }
+    return 'bg-green-600 text-white hover:bg-green-700';
+  };
+
   return (
     <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
       <div className="p-5 border-b border-gray-200">
         <h3 className="text-lg font-bold text-gray-900">Employee Availability</h3>
+        <p className="text-sm text-gray-500 mt-1">Click to cycle: All Day → Morning Only → Dinner Only</p>
       </div>
 
       <div className="overflow-x-auto">
@@ -54,16 +79,10 @@ const AvailabilityTable = ({
                       </span>
                     ) : (
                       <button
-                        onClick={() => onToggleUnavailability(employee.id, date)}
-                        className={`w-full px-3 py-2 rounded-lg font-medium text-sm transition ${
-                          unavailability[`${employee.id}-${formatDate(date)}`]
-                            ? 'bg-red-100 text-red-700 hover:bg-red-200'
-                            : 'bg-green-600 text-white hover:bg-green-700'
-                        }`}
+                        onClick={() => onToggleDayAvailability(employee.id, date)}
+                        className={`w-full px-3 py-2 rounded-lg font-medium text-sm transition ${getAvailabilityStyles(employee.id, date)}`}
                       >
-                        {unavailability[`${employee.id}-${formatDate(date)}`]
-                          ? 'Unavailable'
-                          : 'Available'}
+                        {getAvailabilityLabel(employee.id, date)}
                       </button>
                     )}
                   </td>

@@ -28,7 +28,26 @@ const isAlreadyAssignedInBlock = (employeeId, dateStr, shiftKey, schedule, shift
   });
 };
 
-export const useSchedule = (employees, shiftTemplates, currentWeekStart, unavailability, closedDates) => {
+// Helper function to check if an employee can work a specific shift based on their day availability preference
+const canWorkShiftBlock = (employeeId, dateStr, shiftKey, dayAvailability) => {
+  const key = `${employeeId}-${dateStr}`;
+  const availability = dayAvailability[key] || 'all';
+  const shiftBlock = getShiftBlock(shiftKey);
+  
+  // If availability is 'all', they can work any shift
+  if (availability === 'all') return true;
+  
+  // If availability is 'morning', they can only work morning shifts
+  if (availability === 'morning') return shiftBlock === 'morning';
+  
+  // If availability is 'dinner', they can only work dinner shifts
+  if (availability === 'dinner') return shiftBlock === 'dinner';
+  
+  // Default: allow
+  return true;
+};
+
+export const useSchedule = (employees, shiftTemplates, currentWeekStart, dayAvailability, closedDates) => {
   const [schedule, setSchedule] = useState({});
 
   const canWorkShift = useCallback((employeeId, shiftKey) => {
@@ -41,10 +60,15 @@ export const useSchedule = (employees, shiftTemplates, currentWeekStart, unavail
   }, [employees]);
 
   const isUnavailable = useCallback((employeeId, date) => {
+    // This function is kept for backward compatibility but now checks day availability
     const dateStr = formatDate(date);
     const key = `${employeeId}-${dateStr}`;
-    return unavailability[key] || false;
-  }, [unavailability]);
+    const availability = dayAvailability[key] || 'all';
+    // If availability is explicitly set to something other than 'all', they're not "unavailable"
+    // but their availability is restricted. This function now returns false (available)
+    // since we handle restrictions in canWorkShiftBlock
+    return false;
+  }, [dayAvailability]);
 
   const isStoreClosed = useCallback((date) => {
     const dateStr = formatDate(date);
@@ -76,7 +100,7 @@ export const useSchedule = (employees, shiftTemplates, currentWeekStart, unavail
       shiftKeys.forEach((shiftKey) => {
         const availableEmployees = employees.filter(
           (emp) => 
-            !isUnavailable(emp.id, date) && 
+            canWorkShiftBlock(emp.id, dateStr, shiftKey, dayAvailability) &&
             canWorkShift(emp.id, shiftKey) &&
             !isAlreadyAssignedInBlock(emp.id, dateStr, shiftKey, newSchedule, shiftTemplates)
         );
@@ -96,7 +120,7 @@ export const useSchedule = (employees, shiftTemplates, currentWeekStart, unavail
     });
 
     setSchedule(newSchedule);
-  }, [employees, shiftTemplates, currentWeekStart, isUnavailable, isStoreClosed, canWorkShift]);
+  }, [employees, shiftTemplates, currentWeekStart, dayAvailability, isStoreClosed, canWorkShift]);
 
   return {
     schedule,

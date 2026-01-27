@@ -33,9 +33,9 @@
     <AvailabilityTable
       :employees="employees"
       :weekDates="weekDates"
-      :unavailability="unavailability"
+      :dayAvailability="dayAvailability"
       :isStoreClosed="isStoreClosed"
-      @toggle="(employeeId, date) => $emit('toggleUnavailability', employeeId, date)"
+      @toggle="(employeeId, date) => $emit('toggleDayAvailability', employeeId, date)"
     />
 
     <div v-if="Object.keys(schedule).length > 0" class="space-y-6">
@@ -71,7 +71,7 @@ defineProps({
   currentWeekStart: Date,
   weekDates: Array,
   employees: Array,
-  unavailability: Object,
+  dayAvailability: Object,
   closedDates: Object,
   isStoreClosed: Function,
   schedule: Object,
@@ -79,6 +79,6 @@ defineProps({
   getShiftTimes: Function,
 });
 
-defineEmits(['update:currentWeekStart', 'generate', 'export', 'toggleStoreClosed', 'toggleUnavailability']);
+defineEmits(['update:currentWeekStart', 'generate', 'export', 'toggleStoreClosed', 'toggleDayAvailability']);
 </script>
 
