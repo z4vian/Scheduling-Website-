@@ -21,3 +21,9 @@ pnpm-depbu.log*
 Thumbs.db
 .vscode/
 .idea/ 
+
+node_moduels/
+.vercel/ndist/
+
+node_modules/
+.vercel/ndist/
