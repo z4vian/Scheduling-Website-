@@ -9,16 +9,14 @@ import EmployeesTab from './components/EmployeesTab';
 const EmployeeScheduler = () => {
   const [employees, setEmployees] = useState([
     { id: 1, name: 'Yuki', shiftAvailability: {} },
-    { id: 2, name: 'Jesse', shiftAvailability: {} },
-    { id: 3, name: 'Fred', shiftAvailability: {} },
-    { id: 4, name: 'Andrea', shiftAvailability: {} },
-    { id: 5, name: 'Zavian', shiftAvailability: {} },
-    { id: 6, name: 'Trey', shiftAvailability: {} },
-    { id: 7, name: 'Ysa', shiftAvailability: {} },
+    { id: 2, name: 'Fred', shiftAvailability: {} },
+    { id: 3, name: 'Zavian', shiftAvailability: {} },
+    { id: 4, name: 'Trey', shiftAvailability: {} },
+    { id: 5, name: 'Ysa', shiftAvailability: {} },
   ]);
 
   const [shiftTemplates, setShiftTemplates] = useState({
-    morningA: { name: 'Morning A (Opening)', defaultStart: '6:00', defaultEnd: '11:00' },
+    morningA: { name: 'Morning A (Opening)', defaultStart: '11:', defaultEnd: '11:00' },
     morningB: { name: 'Morning B (Closing)', defaultStart: '8:00', defaultEnd: '14:00' },
     dinnerA: { name: 'Dinner A (Early)', defaultStart: '15:00', defaultEnd: '19:00' },
     dinnerB: { name: 'Dinner B (Middle)', defaultStart: '16:00', defaultEnd: '21:00' },
@@ -48,10 +46,11 @@ const EmployeeScheduler = () => {
     const key = `${employeeId}-${dateStr}`;
     const currentValue = dayAvailability[key] || 'all';
     
-    // Cycle through: all -> morning -> dinner -> all
+    // Cycle through: all -> morning -> dinner -> unavailable -> all
     const nextValue = 
       currentValue === 'all' ? 'morning' :
       currentValue === 'morning' ? 'dinner' :
+      currentValue === 'dinner' ? 'unavailable' :
       'all';
     
     if (nextValue === 'all') {
