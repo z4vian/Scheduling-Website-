@@ -6,7 +6,7 @@
           Employee Scheduler
         </h1>
         <p class="mt-3 text-lg text-gray-600">
-          Jesse please use this I spent like a week on this 
+          An Employee scheduler built for ee-nami. 
         </p>
       </div>
 
