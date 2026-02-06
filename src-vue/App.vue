@@ -70,12 +70,10 @@ import EmployeesTab from './components/EmployeesTab.vue';
 
 const employees = ref([
   { id: 1, name: 'Yuki', shiftAvailability: {} },
-  { id: 2, name: 'Jesse', shiftAvailability: {} },
-  { id: 3, name: 'Fred', shiftAvailability: {} },
-  { id: 4, name: 'Andrea', shiftAvailability: {} },
-  { id: 5, name: 'Zavian', shiftAvailability: {} },
-  { id: 6, name: 'Trey', shiftAvailability: {} },
-  { id: 7, name: 'Ysa', shiftAvailability: {} },
+  { id: 2, name: 'Fred', shiftAvailability: {} },
+  { id: 3, name: 'Zavian', shiftAvailability: {} },
+  { id: 4, name: 'Trey', shiftAvailability: {} },
+  { id: 5, name: 'Ysa', shiftAvailability: {} },
 ]);
 
 const shiftTemplates = ref({
