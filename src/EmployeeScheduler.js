@@ -16,11 +16,11 @@ const EmployeeScheduler = () => {
   ]);
 
   const [shiftTemplates, setShiftTemplates] = useState({
-    morningA: { name: 'Morning A (Opening)', defaultStart: '11:', defaultEnd: '11:00' },
-    morningB: { name: 'Morning B (Closing)', defaultStart: '8:00', defaultEnd: '14:00' },
-    dinnerA: { name: 'Dinner A (Early)', defaultStart: '15:00', defaultEnd: '19:00' },
-    dinnerB: { name: 'Dinner B (Middle)', defaultStart: '16:00', defaultEnd: '21:00' },
-    dinnerC: { name: 'Dinner C (Closing)', defaultStart: '17:00', defaultEnd: '23:00' },
+    morningA: { name: 'Morning A (Opening)', defaultStart: '11:00', defaultEnd: '14:00' },
+    morningB: { name: 'Morning B (Closing)', defaultStart: '11:30', defaultEnd: '14:30' },
+    dinnerA: { name: 'Dinner A (Early)', defaultStart: '17:15', defaultEnd: '20:30' },
+    dinnerB: { name: 'Dinner B (Middle)', defaultStart: '17:15', defaultEnd: '21:00' },
+    dinnerC: { name: 'Dinner C (Closing)', defaultStart: '17:30', defaultEnd: '22:00' },
   });
 
   const [shiftOverrides, setShiftOverrides] = useState({});
